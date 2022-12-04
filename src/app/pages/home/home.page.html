@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Fire Chat</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" id="popover">
+        <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-popover #popover trigger="popover" triggerAction="click">
+      <ng-template>
+        <ion-content class="ion-padding ion-text-center" (click)="logout()">
+          <ion-label color="danger">LOGOUT</ion-label>
+        </ion-content>
+      </ng-template>
+    </ion-popover>
+  </ion-toolbar>
+  <ion-segment [value]="segment" mode="md" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="status">
+      <ion-label>Status</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="chats">
+      <ion-label>Chats</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="calls">
+      <ion-label>Calls</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+<ion-content color="light">
+  <ion-list *ngIf="segment == 'chats' && (chatRooms) as rooms ">
+    <ion-list-header class="ion-padding-bottom" color="light">
+      Recent Chats
+    </ion-list-header>
+
+    <ion-item *ngFor="let item of rooms" (click)="getChat(item)" detail="true">
+      <ion-avatar slot="start">
+        <img [src]="item?.photo" />
+      </ion-avatar>
+      <ion-label>
+        Nasim
+        <p>
+          <ion-text> message </ion-text>
+        </p>
+      </ion-label>
+      <ion-text color="medium"> 10:00 AM </ion-text>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="newChat()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

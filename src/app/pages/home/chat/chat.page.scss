@@ -1,0 +1,19 @@
+ion-content {
+  ion-list {
+    background: transparent;
+  }
+}
+
+ion-footer {
+  background: transparent;
+  ion-toolbar {
+    padding: 0 3px;
+    ion-textarea {
+      --padding-top: 13px;
+      min-height: 45px;
+      border-radius: 20px;
+      margin: 0.5vh 0;
+      background-color: #fff;
+    }
+  }
+}
