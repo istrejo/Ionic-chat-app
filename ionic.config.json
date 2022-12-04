@@ -1,5 +1,7 @@
 {
   "name": "firebase-chat-app",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

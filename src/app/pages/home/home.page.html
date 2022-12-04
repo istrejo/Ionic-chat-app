@@ -3,7 +3,7 @@
     <ion-title>Fire Chat</ion-title>
     <ion-buttons slot="end">
       <ion-button fill="clear" id="popover">
-        <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
+        <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-popover #popover trigger="popover" triggerAction="click">
@@ -33,7 +33,11 @@
       Recent Chats
     </ion-list-header>
 
-    <ion-item *ngFor="let item of rooms" (click)="getChat(item)" detail="true">
+    <ion-item
+      *ngFor="let item of rooms"
+      [routerLink]="['/home/chats', item.id]"
+      detail="true"
+    >
       <ion-avatar slot="start">
         <img [src]="item?.photo" />
       </ion-avatar>
