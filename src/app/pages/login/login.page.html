@@ -10,9 +10,13 @@
     </ion-text>
   </ion-label>
 
-  <form [formGroup]="form">
+  <form [formGroup]="form" (ngSubmit)="login()">
     <ion-list lines="none" class="ion-margin ion-padding ion-text-center">
-      <ion-item class="ion-margin-vertical">
+      <ion-item
+        fill="none"
+        class="ion-margin-vertical"
+        [ngClass]="{'valid': form.get('email').valid && form.get('email').touched,'invalid': form.get('email').invalid && form.get('email').dirty}"
+      >
         <ion-icon name="mail-outline" slot="end" color="medium"> </ion-icon>
         <ion-input formControlName="email" placeholder="Enter Email Address">
         </ion-input>
@@ -20,12 +24,15 @@
       <ion-text
         class="ion-text-left"
         color="danger"
-        *ngIf="!form.get('email').valid && form.get('email').touched"
+        *ngIf="form.get('email').invalid && form.get('email').touched"
       >
         <p class="error">*Please enter proper Email Address</p>
       </ion-text>
 
-      <ion-item class="ion-margin-vertical">
+      <ion-item
+        class="ion-margin-vertical"
+        [ngClass]="{'valid': form.get('password').valid && form.get('password').touched, 'invalid': form.get('password').invalid && form.get('password').touched}"
+      >
         <ion-icon
           (click)="onChange()"
           [name]="isTypePassword ? 'lock-closed-outline' : 'lock-open-outline'"
@@ -69,7 +76,7 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-button color="primary" shape="round" (click)="onSubmit()"
+      <ion-button type="submit" color="primary" shape="round"
         >Log In</ion-button
       >
       <p class="signup">

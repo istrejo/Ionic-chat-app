@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AlertController, LoadingController } from '@ionic/angular';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { LoadingService } from 'src/app/core/services/loading/loading.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,7 +15,12 @@ export class SignupPage implements OnInit {
   isTypePassword: boolean = true;
   isLoading: boolean = false;
 
-  constructor() {
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private alertCtrl: AlertController,
+    private loadingserive: LoadingService
+  ) {
     this.initForm();
   }
 
@@ -33,9 +42,42 @@ export class SignupPage implements OnInit {
     this.isTypePassword = !this.isTypePassword;
   }
 
-  onSubmit() {
-    if (!this.signupForm.valid) return;
-    console.log(this.signupForm.value);
-    // this.register(this.signupForm);
+  async register() {
+    try {
+      this.loadingserive.presentLoading();
+      if (this.signupForm.valid) {
+        const { email, password, username } = this.signupForm.getRawValue();
+        const user = await this.authService.register(email, password, username);
+        if (user) {
+          console.log(
+            '🚀 ~ file: signup.page.ts:53 ~ SignupPage ~ register ~ user',
+            user
+          );
+          this.router.navigate(['/home']);
+          this.signupForm.reset();
+          this.loadingserive.dismissLoading();
+        }
+      } else {
+        this.signupForm.markAllAsTouched();
+      }
+    } catch (error) {
+      this.loadingserive.dismissLoading();
+      console.log(error);
+      let msg: string = 'Could not sign you up, please try again.';
+      if (error.code == 'auth/email-already-in-use') {
+        msg = 'Email already in use';
+      }
+      this.presentAler(msg);
+    }
+  }
+
+  async presentAler(message: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Alert',
+      message,
+      buttons: ['OK'],
+    });
+
+    alert.present();
   }
 }

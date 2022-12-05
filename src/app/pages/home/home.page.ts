@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { NewChatComponent } from 'src/app/shared/components/new-chat/new-chat.component';
 
 @Component({
@@ -58,12 +59,18 @@ export class HomePage implements OnInit {
     },
   ];
 
-  constructor(private modalCtrl: ModalController, private router: Router) {}
+  constructor(
+    private modalCtrl: ModalController,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {}
 
   logout() {
     this.popover.dismiss();
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   segmentChanged(event: any) {
