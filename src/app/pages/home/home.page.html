@@ -28,7 +28,7 @@
 </ion-header>
 
 <ion-content color="light">
-  <ion-list *ngIf="segment == 'chats' && (chatRooms) as rooms ">
+  <ion-list *ngIf="segment == 'chats' && (chatRooms | async ) as rooms ">
     <ion-list-header class="ion-padding-bottom" color="light">
       Recent Chats
     </ion-list-header>
@@ -38,16 +38,19 @@
       [routerLink]="['/home/chats', item.id]"
       detail="true"
     >
-      <ion-avatar slot="start">
-        <img [src]="item?.photo" />
-      </ion-avatar>
-      <ion-label>
-        Nasim
+      <ng-container *ngIf="(item?.user | async) as user">
+        <ion-avatar slot="start">
+          <img [src]="getUser(user).photo" />
+        </ion-avatar>
+        <ion-label>
+          {{getUser(user)?.name}}
+          <!-- Nasim
         <p>
           <ion-text> message </ion-text>
-        </p>
-      </ion-label>
-      <ion-text color="medium"> 10:00 AM </ion-text>
+        </p> -->
+        </ion-label>
+        <!-- <ion-text color="medium"> 10:00 AM </ion-text> -->
+      </ng-container>
     </ion-item>
   </ion-list>
 

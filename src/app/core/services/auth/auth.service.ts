@@ -33,21 +33,22 @@ export class AuthService {
         email,
         password
       );
-      console.log('Registered user -->', user);
       const data = {
         email: email,
         name: username,
         uid: user.uid,
         photo: 'https://i.pravatar.cc/' + this.randomIntFromInterval(200, 400),
       };
-      // await this.apiService.setDocument(`users/${user.uid}`, data);
-      // const userData = {
-      //   id: user.uid,
-      // };
+      const document = await this.apiService.setDocument(
+        `users/${user.uid}`,
+        data
+      );
+      const userData = {
+        id: user.uid,
+      };
       // await this.login(email, password);
       await signInWithEmailAndPassword(this.afAuth, email, password);
 
-      console.log(user);
       return user;
       // return userData;
     } catch (error) {
@@ -77,14 +78,13 @@ export class AuthService {
       await signOut(this.afAuth);
       this._uid.next(null);
     } catch (error) {
-      console.log('Error -->', error);
+      console.log('Logout Error: ', error);
     }
   }
 
   getId() {
     const auth = getAuth();
     this.currentUser = auth.currentUser;
-    console.log(this.currentUser);
     return this.currentUser?.uid;
   }
 
@@ -108,7 +108,6 @@ export class AuthService {
   checkAuth(): Promise<any> {
     return new Promise((resolve, reject) => {
       onAuthStateChanged(this.afAuth, (user) => {
-        console.log('auth user: ', user);
         resolve(user);
       });
     });

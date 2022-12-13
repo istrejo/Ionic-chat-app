@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { NavigationExtras, Router } from '@angular/router';
+import { LoadingController, ModalController } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { ChatService } from 'src/app/core/services/chat/chat.service';
 
 @Component({
   selector: 'app-new-chat',
@@ -7,9 +10,14 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./new-chat.component.scss'],
 })
 export class NewChatComponent implements OnInit {
-  @Input() users: any[] = [];
+  @Input() users: Observable<any>;
 
-  constructor(private modalCtrl: ModalController) {}
+  constructor(
+    private modalCtrl: ModalController,
+    private chatService: ChatService,
+    private router: Router,
+    private loadingCtrl: LoadingController
+  ) {}
 
   ngOnInit() {}
 
@@ -17,5 +25,28 @@ export class NewChatComponent implements OnInit {
     this.modalCtrl.dismiss();
   }
 
-  startChat(item: any) {}
+  async startChat(item) {
+    try {
+      // this.global.showLoader();
+      // create chatroom
+      const loading = await this.loadingCtrl.create({});
+      loading.present();
+      const room = await this.chatService.createChatRoom(item?.uid);
+      loading.dismiss();
+      console.log('room: ', room);
+      this.cancel();
+      const navData: NavigationExtras = {
+        queryParams: {
+          name: item?.name,
+        },
+      };
+      this.router.navigate(['/', 'home', 'chats', room?.id], navData);
+      // this.global.hideLoader();
+    } catch (e) {
+      console.log(e);
+      this.loadingCtrl.dismiss();
+
+      // this.global.hideLoader();
+    }
+  }
 }

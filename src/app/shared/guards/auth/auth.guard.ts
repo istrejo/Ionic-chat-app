@@ -12,7 +12,6 @@ export class AuthGuard implements CanLoad {
   async canLoad(): Promise<boolean> {
     try {
       const user = await this.authService.checkAuth();
-      console.log(user);
       if (user) {
         return true;
       } else {
