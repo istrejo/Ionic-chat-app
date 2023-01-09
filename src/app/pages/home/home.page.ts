@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { user } from '@angular/fire/auth';
+import { NavigationExtras, Router } from '@angular/router';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { User } from 'firebase/auth';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ChatService } from 'src/app/core/services/chat/chat.service';
 import { NewChatComponent } from 'src/app/shared/components/new-chat/new-chat.component';
@@ -13,64 +14,109 @@ import { NewChatComponent } from 'src/app/shared/components/new-chat/new-chat.co
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
+  @ViewChild('new_chat') modal: ModalController;
   @ViewChild('popover') popover: PopoverController;
-
-  segment: string = 'chats';
+  segment = 'chats';
+  open_new_chat = false;
   users: Observable<any[]>;
   chatRooms: Observable<any[]>;
+  model = {
+    icon: 'chatbubbles-outline',
+    title: 'No Chat Rooms',
+    color: 'danger',
+  };
 
-  constructor(
-    private modalCtrl: ModalController,
-    private router: Router,
-    private authService: AuthService,
-    private chatservice: ChatService
-  ) {}
+  constructor(private router: Router, private chatService: ChatService) {}
 
   ngOnInit() {
     this.getRooms();
   }
 
   getRooms() {
-    this.chatservice.getChatRooms();
-    this.chatRooms = this.chatservice.chatRooms;
+    // this.chatService.getId();
+    this.chatService.getChatRooms();
+    this.chatRooms = this.chatService.chatRooms;
     console.log('chatrooms: ', this.chatRooms);
   }
 
   async logout() {
     try {
+      console.log('logout');
       this.popover.dismiss();
-      await this.authService.logout();
-      this.router.navigate(['/login']);
+      await this.chatService.auth.logout();
+      // this.chatService.currentUserId = null;
+      this.router.navigateByUrl('/login', { replaceUrl: true });
     } catch (e) {
       console.log(e);
     }
   }
 
-  segmentChanged(event: any) {
+  onSegmentChanged(event: any) {
     console.log(event);
+    this.segment = event.detail.value;
   }
 
-  async newChat() {
-    if (!this.users) await this.getUsers();
-    const modal = await this.modalCtrl.create({
-      component: NewChatComponent,
-      componentProps: {
-        users: this.users,
-      },
-    });
-    modal.present();
+  newChat() {
+    this.open_new_chat = true;
+    if (!this.users) this.getUsers();
   }
 
   getUsers() {
-    this.chatservice.getUsers();
-    this.users = this.chatservice.users;
+    this.chatService.getUsers();
+    this.users = this.chatService.users;
+  }
+
+  onWillDismiss(event: any) {}
+
+  cancel() {
+    this.modal.dismiss();
+    this.open_new_chat = false;
+  }
+
+  async startChat(item) {
+    try {
+      // this.global.showLoader();
+      // create chatroom
+      const room = await this.chatService.createChatRoom(item?.uid);
+      console.log('room: ', room);
+      this.cancel();
+      const navData: NavigationExtras = {
+        queryParams: {
+          name: item?.name,
+        },
+      };
+      this.router.navigate(['/', 'home', 'chats', room?.id], navData);
+      // this.global.hideLoader();
+    } catch (e) {
+      console.log(e);
+      // this.global.hideLoader();
+    }
   }
 
   getChat(item) {
-    this.router.navigate(['/', 'home', 'chats', item.id]);
+    (item?.user).pipe(take(1)).subscribe((user_data) => {
+      console.log('data: ', user_data);
+      const navData: NavigationExtras = {
+        queryParams: {
+          name: user_data?.name,
+        },
+      };
+      console.log('Room data: ', item);
+      this.router.navigate(['/', 'home', 'chats', item?.id], navData);
+    });
   }
 
   getUser(user: any) {
     return user;
   }
+  // async newChat() {
+  //   if (!this.users) await this.getUsers();
+  //   const modal = await this.modalCtrl.create({
+  //     component: NewChatComponent,
+  //     componentProps: {
+  //       users: this.users,
+  //     },
+  //   });
+  //   modal.present();
+  // }
 }

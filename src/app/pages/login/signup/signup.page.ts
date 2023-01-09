@@ -18,8 +18,7 @@ export class SignupPage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private alertCtrl: AlertController,
-    private loadingserive: LoadingService
+    private alertCtrl: AlertController
   ) {
     this.initForm();
   }
@@ -44,24 +43,20 @@ export class SignupPage implements OnInit {
 
   async register() {
     try {
-      this.loadingserive.presentLoading();
+      this.isLoading = true;
       if (this.signupForm.valid) {
         const { email, password, username } = this.signupForm.getRawValue();
         const user = await this.authService.register(email, password, username);
+        this.isLoading = false;
         if (user) {
-          console.log(
-            '🚀 ~ file: signup.page.ts:53 ~ SignupPage ~ register ~ user',
-            user
-          );
           this.router.navigate(['/home']);
           this.signupForm.reset();
-          this.loadingserive.dismissLoading();
         }
       } else {
         this.signupForm.markAllAsTouched();
       }
     } catch (error) {
-      this.loadingserive.dismissLoading();
+      this.isLoading = false;
       console.log(error);
       let msg: string = 'Could not sign you up, please try again.';
       if (error.code == 'auth/email-already-in-use') {

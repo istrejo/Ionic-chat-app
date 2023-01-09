@@ -49,4 +49,8 @@ export class NewChatComponent implements OnInit {
       // this.global.hideLoader();
     }
   }
+
+  getUser(user: any) {
+    return user;
+  }
 }

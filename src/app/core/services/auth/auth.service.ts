@@ -46,7 +46,6 @@ export class AuthService {
       const userData = {
         id: user.uid,
       };
-      // await this.login(email, password);
       await signInWithEmailAndPassword(this.afAuth, email, password);
 
       return user;

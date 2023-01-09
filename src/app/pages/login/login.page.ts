@@ -13,14 +13,12 @@ import { LoadingService } from 'src/app/core/services/loading/loading.service';
 export class LoginPage implements OnInit {
   form: FormGroup;
   isTypePassword: boolean = true;
-  isLogin = false;
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
     private authService: AuthService,
-    private alertCtrl: AlertController,
-    private loadingserive: LoadingService,
-    private loadingCtrl: LoadingController
+    private alertCtrl: AlertController
   ) {
     this.initForm();
   }
@@ -42,26 +40,16 @@ export class LoginPage implements OnInit {
     this.isTypePassword = !this.isTypePassword;
   }
 
-  onSubmit() {
-    if (!this.form.valid) return;
-    console.log(this.form.getRawValue());
-    // this.login(this.form);
-  }
-
   async login() {
     try {
-      this.loadingserive.presentLoading();
+      this.isLoading = true;
       if (this.form.valid) {
         const { email, password } = this.form.getRawValue();
         const user = await this.authService.login(email, password);
+        this.isLoading = true;
         if (user) {
-          console.log(
-            '🚀 ~ file: login.page.ts:57 ~ LoginPage ~ login ~ user',
-            user
-          );
           this.router.navigate(['/home']);
           this.form.reset();
-          this.loadingserive.dismissLoading();
         }
       } else {
         this.form.markAllAsTouched();
@@ -71,9 +59,7 @@ export class LoginPage implements OnInit {
         '🚀 ~ file: login.page.ts:69 ~ LoginPage ~ login ~ error',
         error
       );
-      // this.loadingserive.dismissLoading();
-      this.loadingCtrl.dismiss();
-
+      this.isLoading = true;
       let msg: string = 'Could not sign you in, please try again.';
       if (error.code == 'auth/user-not-found')
         msg = 'E-mail address could not be found';

@@ -1,21 +1,18 @@
 <ion-item
   lines="none"
-  [class]="chat.sender != current_user_id ? 'sender' : 'user'"
+  [class]="chat?.sender != current_user_id ? 'sender' : 'user'"
 >
   <ion-label
-    [slot]="chat?.sender === current_user_id ? 'end' : 'start'"
+    [slot]="chat?.sender == current_user_id ? 'end' : 'start'"
     class="ion-text-wrap"
   >
-    <ion-text>
-      {{ chat?.message }}
-      <ion-note>
-        <!-- <small> {{ chat?.createAt?.toDate() | date : "HH:mm" }} </small> -->
-        <small> 10:00 AM</small>
-        <ion-icon
-          [color]="chat?.sender === current_user_id ? 'light' : 'primary'"
-          name="checkmark-done-outline"
-        ></ion-icon>
-      </ion-note>
-    </ion-text>
+    <ion-text>{{ chat?.message }}</ion-text>
+    <ion-note>
+      <small>{{ chat?.createdAt?.toDate() | date : "HH:mm" }}</small>
+      <ion-icon
+        [color]="chat?.sender == current_user_id ? 'light' : 'primary'"
+        name="checkmark-done-outline"
+      ></ion-icon>
+    </ion-note>
   </ion-label>
 </ion-item>

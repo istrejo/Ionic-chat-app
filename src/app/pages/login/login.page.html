@@ -76,9 +76,12 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-button type="submit" color="primary" shape="round"
+      <ion-button *ngIf="!isLoading" type="submit" color="primary" shape="round"
         >Log In</ion-button
       >
+      <ion-button *ngIf="isLoading" fill="clear">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+      </ion-button>
       <p class="signup">
         <ion-note>
           Not a member yet?

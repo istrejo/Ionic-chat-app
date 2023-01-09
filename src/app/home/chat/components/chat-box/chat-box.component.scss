@@ -5,14 +5,13 @@ ion-item {
   --ion-safe-area-left: 0px;
   --min-height: 32px;
   --border-width: 0;
-
   ion-label {
     position: relative;
     border-radius: 12px;
     padding: 4px 8px;
     margin-top: 12px;
     max-width: 70%;
-
+    min-width: 50%;
     ion-text {
       font-weight: 400;
       font-size: 0.9rem;
@@ -39,7 +38,6 @@ ion-item {
   }
 }
 
-// styles for sender message
 .sender {
   &::after {
     content: "";
@@ -64,10 +62,19 @@ ion-item {
         width: 72px !important;
       }
     }
+    ion-note {
+      small {
+        margin-right: 2px;
+        line-height: 16px;
+      }
+
+      ion-icon {
+        font-size: 16px;
+      }
+    }
   }
 }
 
-// styles for user message
 .user {
   &::after {
     content: "";
@@ -96,7 +103,13 @@ ion-item {
     }
     ion-note {
       small {
+        margin-right: 2px;
+        line-height: 16px;
         color: var(--ion-color-dark);
+      }
+
+      ion-icon {
+        font-size: 16px;
       }
     }
   }

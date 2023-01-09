@@ -17,14 +17,6 @@
     </ion-text>
   </ion-label>
 
-  <!-- <ion-icon
-    name="arrow-back-outline"
-    class="backButton"
-    routerLink="/login"
-    color="primary"
-  >
-  </ion-icon> -->
-
   <form [formGroup]="signupForm" (ngSubmit)="register()">
     <ion-list lines="none" class="ion-margin ion-padding ion-text-center">
       <ion-item class="ion-margin-vertical">
@@ -100,9 +92,12 @@
           </div>
         </ion-col>
       </ion-row>
-      <ion-button type="submit" color="primary" shape="round"
+      <ion-button *ngIf="!isLoading" type="submit" color="primary" shape="round"
         >Sign Up</ion-button
       >
+      <ion-button *ngIf="isLoading" fill="clear">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+      </ion-button>
     </ion-list>
   </form>
 </ion-content>

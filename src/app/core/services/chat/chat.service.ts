@@ -12,11 +12,12 @@ export class ChatService {
   public chatRooms: Observable<any>;
   public selectedChatRoomMessages: Observable<any>;
 
-  constructor(private auth: AuthService, private api: ApiService) {
-    this.getId();
+  constructor(public auth: AuthService, private api: ApiService) {
+    // this.getId();
   }
 
   getId() {
+    console.log(this.currentUserId);
     this.currentUserId = this.auth.getId();
   }
 
@@ -70,6 +71,11 @@ export class ChatService {
         map((data: any[]) => {
           console.log('room data: ', data);
           data.map((element) => {
+            console.log(
+              '🚀 ~ file: chat.service.ts:74 ~ ChatService ~ data.map ~ element',
+              element
+            );
+
             const user_data = element.members.filter(
               (x) => x != this.currentUserId
             );

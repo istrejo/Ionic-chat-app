@@ -59,7 +59,7 @@ export class ApiService {
       const q = query(dataRef, queryFn);
       dataRef = q;
     }
-    const collection_data = collectionData<any>(dataRef); // valueChanges, for doc use docData
+    const collection_data = collectionData<any>(dataRef, { idField: 'id' }); // valuechanges, for doc use docData
     return collection_data;
   }
 
